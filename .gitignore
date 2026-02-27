@@ -1,0 +1,23 @@
+# Entornos Virtuales
+.venv/
+env/
+venv/
+ENV/
+.env
+
+# Archivos temporales y de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Basura del explorador (Jupyter Notebooks)
+.ipynb_checkpoints
+.jupyter_cache
+
+# Bases de datos pesadas (opcional, el archivo se descarga por la API!)
+.csv
+*.sqlite3
+
+# Sistema Operativo
+.DS_Store

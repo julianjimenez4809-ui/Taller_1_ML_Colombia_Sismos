@@ -1,0 +1,381 @@
+T A L L E R  P R Á C T I C O
+Taller 1: Clustering de Actividad
+Sísmica en Colombia
+Machine Learning I — ML1-2026I — Pregrado en Ciencia
+de Datos
+Julián Zuluaga — Docente
+20 de febrero de 2026
+
+Taller 1 — Clustering de Actividad Sísmica en Colombia
+Información General
+Asignatura Machine Learning I (ML1-2026I)
+Programa Pregrado en Ciencia de Datos — Universidad Externado de
+Colombia
+Docente Julián Zuluaga
+Fecha de
+publicación
+20 de febrero de 2026
+Fecha de entrega 6 de marzo de 2026, 11:59 PM
+Peso 15% de la nota final
+Modalidad Individual
+Tiempo estimado 10-15 horas
+Contexto del Problema
+El Servicio Geológico Colombiano necesita tu ayuda
+Colombia es uno de los países con mayor actividad sísmica del planeta. Ubicado en la
+intersección de tres placas tectónicas — Nazca, Caribe y Sudamericana — el territorio
+colombiano experimenta miles de sismos cada año, la mayoría imperceptibles pero
+algunos devastadores.
+El  Servicio Geológico Colombiano (SGC) monitorea esta actividad las 24 horas,
+pero  enfrenta  un  desafío:  ¿cómo  identificar  automáticamente zonas  sísmicas  con
+comportamientos similares para priorizar la instalación de estaciones de monitoreo y
+optimizar los sistemas de alerta temprana?
+2 Universidad Externado de Colombia
+T u misión es aplicar  K-Means Clustering a datos reales del catálogo sísmico del
+USGS  (United  States  Geological  Survey)  para  descubrir  patrones  ocultos  en  la
+sismicidad colombiana. No tienes etiquetas: nadie te dice cuáles son las zonas. T ú las
+descubrirás.
+Pista: Hay  un  fenómeno  geológico  famoso  en  Colombia  que  el  algoritmo
+debería encontrar por sí solo si lo aplicas correctamente. Los geólogos llevan
+décadas estudiándolo. ¿Podrá K-Means redescubrirlo?
+Objetivos de Aprendizaje
+Al completar este taller, serás capaz de:
+Aplicar CRISP-DM como metodología estructurada de análisis de datos
+Implementar K-Means con scikit-learn sobre datos reales
+Evaluar el número óptimo de clusters con el método del codo y Silhouette Score
+Comprender el impacto del scaling en algoritmos basados en distancia
+Interpretar y comunicar resultados de clustering en un contexto de negocio real
+Crear visualizaciones interactivas que cuenten una historia con los datos
+Datos
+Fuente
+Los datos provienen del USGS Earthquake Hazards Program, la fuente abierta más
+completa de sismicidad global.
+Descarga del dataset (2 opciones):
+Opción 1 — Descargar CSV directamente (recomendado):
+Carga el CSV en Python con el siguiente código:
+1. 
+2. 
+3. 
+4. 
+5. 
+6. 
+3 Universidad Externado de Colombia
+import pandas as pd
+url = (
+    "https://zcecnewftnpelovbnutv.supabase.co"
+    "/storage/v1/object/public/project-files"
+    "/academy/ml1/earthquakes_colombia.csv"
+)
+df = pd.read_csv(url)
+print(f"Registros: {len(df)}")
+El archivo contiene 2,791 sismos (499 KB). T ambién puedes copiar la URL completa
+en tu navegador para descargarlo manualmente.
+Opción 2 — API USGS (avanzado):
+Si prefieres descargar datos actualizados directamente de la fuente original:
+url = (
+    "https://earthquake.usgs.gov/fdsnws/event/1/query"
+    "?format=csv&starttime=2010-01-01&endtime=2026-02-20"
+    "&minlatitude=-4.5&maxlatitude=13.5"
+    "&minlongitude=-82&maxlongitude=-66.5"
+    "&minmagnitude=1.5&orderby=time&limit=20000"
+)
+df = pd.read_csv(url)
+Cobertura geográfica
+La consulta cubre la región andina del norte: Colombia y países vecinos (Ecuador,
+Venezuela, Panamá, Perú). El bounding box es:
+Latitud: -4.5° a 13.5° Norte
+Longitud: -82° a -66.5° Oeste
+Variables disponibles
+Variable Tipo Descripción
+time datetime Fecha y hora UTC del sismo
+latitude float Latitud del epicentro (grados)
+longitude float Longitud del epicentro (grados)
+• 
+• 
+4 Universidad Externado de Colombia
+Variable Tipo Descripción
+depth float Profundidad del hipocentro (km)
+mag float Magnitud del sismo
+magType string Tipo de magnitud (mb, mww, ml, etc.)
+nst float Número de estaciones que registraron el sismo
+gap float Brecha azimutal (grados) — cobertura de estaciones
+dmin float Distancia a la estación más cercana (grados)
+rms float Error RMS de la localización (segundos)
+place string Descripción textual de la ubicación
+horizontalErrorfloat Error horizontal de localización (km)
+depthError float Error en profundidad (km)
+magError float Error en magnitud
+Metodología: CRISP-DM
+El  taller  debe seguir  las  fases  de  CRISP-DM.  Cada  sección  de  tu  entrega  debe
+corresponder a una fase.
+Fase 1: Business Understanding (Comprensión del Negocio)
+Pregunta de investigación: ¿Es posible identificar automáticamente zonas sísmicas
+diferenciadas en Colombia utilizando únicamente las características instrumentales de
+los sismos?
+En esta fase debes:
+Definir el problema en tus propias palabras
+Explicar por qué el clustering es apropiado (¿por qué no supervisado?)
+Identificar quién usaría estos resultados y cómo (stakeholders)
+Plantear hipótesis: ¿cuántas zonas sísmicas crees que existen en Colombia?
+• 
+• 
+• 
+• 
+5 Universidad Externado de Colombia
+Pista: Investiga brevemente las placas tectónicas que afectan a Colombia. No
+necesitas ser geólogo, pero entender el contexto enriquecerá tu análisis.
+Fase 2: Data Understanding (Comprensión de los Datos)
+Esta  es  la  fase  de  Análisis Exploratorio de Datos (EDA).  Aquí  debes  conocer
+profundamente tu dataset antes de modelar.
+Preguntas guía:
+¿Cuántos registros tienes? ¿Cuántos corresponden a Colombia específicamente?
+¿Cuáles variables tienen valores nulos? ¿En qué porcentaje?
+¿Cómo se distribuyen las magnitudes? ¿Y las profundidades?
+¿Hay correlaciones interesantes entre variables?
+Genera al menos un mapa scatter (latitud vs longitud) coloreado por
+profundidad y otro por magnitud
+Pista: Un scatter plot de longitude (x) vs latitude (y) coloreado por depth ya
+te va a contar una historia visual poderosa. Los sismos más profundos no están
+donde esperas.
+Fase 3: Data Preparation (Preparación de los Datos)
+En esta fase decides qué features usar y cómo transformarlas.
+3.1 Selección de features
+Selecciona las variables numéricas relevantes para clustering. Considera:
+¿Qué variables describen la ubicación del sismo?
+¿Qué variables describen la naturaleza del sismo?
+¿Hay variables con demasiados nulos que debas excluir?
+3.2 Manejo de datos faltantes
+Decide cómo manejar los nulos: ¿eliminar filas, imputar, o seleccionar solo features sin
+nulos?
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+6 Universidad Externado de Colombia
+3.3 Scaling (CRÍTICO)
+Experimenta: Aplica K-Means  sin escalar y luego  con StandardScaler. Compara
+los resultados.
+Preguntas obligatorias:
+¿Cambian los clusters al escalar? ¿Por qué?
+¿Cuál es la escala de latitude vs depth? ¿Qué feature domina si no escalas?
+¿Cuál versión produce clusters más interpretables para el SGC?
+Pista: Sin scaling, las variables con mayor rango numérico (como latitud y
+longitud) dominan la distancia euclidiana, y K-Means agrupa solo por cercanía
+geográfica plana. Con scaling, la profundidad entra en juego y aparecen zonas
+que geográficamente se superponen pero geológicamente son muy distintas.
+Fase 4: Modeling (Modelamiento)
+4.1 K-Means con diferentes valores de k
+Ejecuta K-Means para k = 2, 3, 4, 5, 6, 7, 8, 9, 10.
+4.2 Método del codo
+Grafica la inercia vs k para identificar el "codo".
+4.3 Silhouette Score
+Calcula el Silhouette Score para cada k. Grafica.
+4.4 Selección de k
+Elige un valor de k y  justifica tu decisión. No basta con "porque el codo está en
+k=5". Argumenta:
+¿Qué dice el codo?
+¿Qué dice el silhouette?
+¿Tiene sentido geológico/geográfico?
+Pista: El "mejor" k no es necesariamente el que tiene mayor silhouette. A veces
+un silhouette ligeramente menor produce clusters más interpretables y útiles
+para el negocio.
+• 
+• 
+• 
+• 
+• 
+• 
+7 Universidad Externado de Colombia
+Fase 5: Evaluation (Evaluación)
+Esta es la  fase más importante del taller. No basta con ejecutar código: debes
+entender qué encontraste.
+5.1 Perfil de cada cluster
+Para cada cluster, reporta:
+Número de sismos
+Rango de latitud, longitud, profundidad y magnitud (media y desviación estándar)
+Interpretación geográfica: ¿dónde queda? ¿Qué zona de Colombia representa?
+5.2 Visualización geográfica
+Crea un mapa scatter de los clusters (latitud vs longitud, coloreado por cluster). ¿Los
+clusters tienen sentido geográfico?
+5.3 Hallazgos
+Responde:
+¿Hay algún cluster de sismicidad profunda concentrada en una zona específica?
+¿Cuál?
+¿Hay clusters que coincidan con la zona de subducción del Pacífico?
+¿Algún cluster captura los sismos de mayor magnitud?
+¿Qué cluster recomendarías priorizar para alertas tempranas y por qué?
+Pista: Busca  en  Google  "Nido  de  Bucaramanga"  después  de  obtener  tus
+resultados. Si tu clustering lo encontró, felicitaciones: acabas de redescubrir uno
+de los fenómenos sísmicos más estudiados del planeta con un algoritmo de
+1957.
+Fase 6: Comunicación de Resultados
+Los resultados técnicos no tienen valor si no se comunican bien. Esta fase evalúa tu
+capacidad de contar una historia con datos.
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+8 Universidad Externado de Colombia
+Entregables
+1. Dashboard HTML Interactivo (60% de la nota del taller)
+Un archivo HTML  autocontenido (un solo archivo  .html) que funcione como un
+dashboard interactivo de los resultados. Debe poder abrirse en cualquier navegador
+sin servidor.
+Requisitos mínimos:
+Mapa interactivo de clusters (recomendado: Plotly, Folium, o Bokeh)
+Gráficos del método del codo y Silhouette Score
+Perfiles de cada cluster (tabla o cards)
+Al menos una visualización creativa que tú diseñes
+Herramientas sugeridas:
+Herramienta Uso Ventaja
+Plotly Gráficos interactivos,
+mapas scatter
+.to_html() genera HTML
+autocontenido
+Folium Mapas geográficos
+interactivos
+.save('mapa.html') con tiles de
+OpenStreetMap
+Panel /
+Bokeh
+Dashboards más complejosWidgets, layouts multi-panel
+Streamlit Apps interactivas streamlit run app.py (si prefieres
+app live)
+Pista para HTML autocontenido con Plotly:
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+fig = make_subplots(rows=2, cols=2, ...)
+fig.write_html("dashboard.html", include_plotlyjs=True)
+• 
+• 
+• 
+• 
+9 Universidad Externado de Colombia
+Esto genera un HTML de ~3MB que funciona offline. Puedes usar make_subplots
+para combinar múltiples gráficos en una sola página.
+Pista para mapas con Folium:
+import folium
+m = folium.Map(location=[4.5, -74.0], zoom_start=6)
+# Agregar marcadores coloreados por cluster...
+m.save("mapa_clusters.html")
+Se valora:
+Creatividad en la presentación visual
+Que el dashboard cuente una historia (no solo gráficos sueltos)
+Interactividad útil (hover con info, zoom, filtros)
+Diseño limpio y profesional
+Que alguien sin conocimiento técnico pueda entender los hallazgos
+2. Reporte Ejecutivo en Markdown (40% de la nota del taller)
+Un  archivo  .md (Markdown)  con  el  reporte  ejecutivo  del  análisis.  Máximo  1500
+palabras.
+Estructura sugerida:
+• 
+• 
+• 
+• 
+• 
+10 Universidad Externado de Colombia
+# Reporte Ejecutivo: Clustering de Actividad Sísmica en Colombia
+## Resumen
+(2-3 párrafos: problema, método, hallazgo principal)
+## Metodología
+(CRISP-DM resumido: qué hiciste en cada fase)
+## Resultados
+(Perfil de clusters, hallazgos clave, el fenómeno descubierto)
+## Impacto del Scaling
+(Comparación sin/con scaling, qué aprendiste)
+## Recomendaciones para el SGC
+(¿Dónde priorizar monitoreo? ¿Por qué?)
+## Conclusiones
+(Reflexión: ¿qué puede y qué NO puede hacer K-Means?)
+## Referencias
+(USGS, papers, fuentes consultadas)
+Criterios de Evaluación
+Criterio Peso Descripción
+CRISP-DM 15% Seguimiento riguroso de las fases. Cada fase tiene
+contenido sustancial
+Análisis técnico20% EDA completo, K-Means bien implementado, scaling
+comparado, métricas correctas
+Interpretación 20% Los clusters tienen sentido geológico. Descubrimiento del
+fenómeno sísmico. Argumentación
+Dashboard
+HTML
+25% Interactividad, diseño, storytelling visual, creatividad
+Reporte
+ejecutivo
+10% Claridad, concisión, calidad de escritura,
+recomendaciones
+11 Universidad Externado de Colombia
+Criterio Peso Descripción
+Código 10% Reproducibilidad, limpieza, documentación, buenas
+prácticas
+Bonificaciones (+0.5 cada una, máximo +1.0)
+Comparación de algoritmos: Implementar DBSCAN o Gaussian Mixture y
+comparar con K-Means
+Feature engineering: Crear variables derivadas (ej: sismos por mes, energía
+acumulada por zona) y evaluar su impacto en el clustering
+Análisis temporal: Mostrar cómo cambia la sismicidad por cluster a lo largo del
+tiempo
+Deploy: Si usas Streamlit, despliega tu app en Streamlit Cloud y comparte el link
+Restricciones y Reglas
+Individual: El taller es de autoría individual. Pueden discutir ideas pero el código
+y el análisis deben ser propios
+Código reproducible: Debo poder ejecutar tu notebook/script y obtener los
+mismos resultados. Usa random_state=42 en K-Means
+Sin librerías de clustering automático: No uses AutoML ni librerías que
+seleccionen k automáticamente. El punto es que tú hagas el análisis
+Citar fuentes: Si usas código de Stack Overflow, tutoriales o papers, cítalos
+Plagio = 0.0: Copiar código o análisis de otro estudiante resulta en nota cero
+para ambos
+Formato de Entrega
+Enviar un archivo comprimido (.zip) con la siguiente estructura:
+• 
+• 
+• 
+• 
+1. 
+2. 
+3. 
+4. 
+5. 
+12 Universidad Externado de Colombia
+Apellido_Nombre_Taller1/
+├── dashboard.html          ← Dashboard interactivo (obligatorio)
+├── reporte.md              ← Reporte ejecutivo (obligatorio)
+├── taller1.ipynb            ← Notebook con todo el análisis (obligatorio)
+├── data/                    ← Datos descargados (opcional)
+│   └── earthquakes.csv
+└── assets/                  ← Imágenes o archivos adicionales (opcional)
+Plataforma: Enviar al correo julian.zuluaga2@uexternado.edu.co con asunto:  [ML1]
+Taller 1 - Apellido Nombre
+Tips Finales
+Empieza por el EDA. No corras a modelar. Entiende tus datos primero. Un buen
+scatter plot vale más que 100 líneas de código
+El scaling importa más de lo que crees. No lo saltes. Es la lección más valiosa
+de este taller
+Interpreta, no solo ejecutes. Cualquiera puede correr 
+KMeans(n_clusters=5).fit(X). Lo que te diferencia es explicar qué significa cada
+cluster
+El dashboard es tu carta de presentación. Un gráfico interactivo bien
+diseñado comunica más que un notebook de 50 celdas
+Busca el fenómeno oculto. Hay algo en los datos que los geólogos conocen
+bien. Si tu modelo lo encuentra, vas por buen camino
+Diviértete. Estás analizando la actividad tectónica de tu propio país con machine
+learning. Eso es bastante increíble
+"El clustering no descubre verdades absolutas — descubre estructura. T u trabajo
+es decidir si esa estructura tiene sentido."
+Machine Learning I — Pregrado en Ciencia de Datos — Universidad Externado de
+Colombia — 2026-I
+1. 
+2. 
+3. 
+4. 
+5. 
+6. 
+13 Universidad Externado de Colombia
+
