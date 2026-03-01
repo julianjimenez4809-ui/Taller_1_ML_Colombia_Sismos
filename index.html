@@ -92,11 +92,11 @@
     <div id="tabs" class="sticky top-0 z-50 bg-[#0a0a0a]/90 backdrop-blur-md border-b border-white/10">
         <div class="max-w-7xl mx-auto px-6 overflow-x-auto no-scrollbar">
             <div class="flex space-x-8 text-sm font-medium font-body whitespace-nowrap" role="tablist">
-                <button class="tab-btn active py-4 border-b-2 border-[#7b39fc] text-[#7b39fc]" data-target="overview" id="overview-tab">1. Overview</button>
-                <button class="tab-btn py-4 border-b-2 border-transparent text-gray-400 hover:text-white" data-target="eda" id="eda-tab">2. EDA</button>
-                <button class="tab-btn py-4 border-b-2 border-transparent text-gray-400 hover:text-white" data-target="modeling" id="modeling-tab">3. Modelado (K-Means)</button>
-                <button class="tab-btn py-4 border-b-2 border-transparent text-gray-400 hover:text-white" data-target="results" id="results-tab">4. Resultados</button>
-                <button class="tab-btn py-4 border-b-2 border-transparent text-gray-400 hover:text-white" data-target="deployment" id="deployment-tab">5. Impacto SGC</button>
+                <button class="tab-btn active py-4 border-b-2 border-[#7b39fc] text-[#7b39fc]" data-target="overview" id="overview-tab" onclick="switchTab('overview')">1. Overview</button>
+                <button class="tab-btn py-4 border-b-2 border-transparent text-gray-400 hover:text-white" data-target="eda" id="eda-tab" onclick="switchTab('eda')">2. EDA</button>
+                <button class="tab-btn py-4 border-b-2 border-transparent text-gray-400 hover:text-white" data-target="modeling" id="modeling-tab" onclick="switchTab('modeling')">3. Modelado (K-Means)</button>
+                <button class="tab-btn py-4 border-b-2 border-transparent text-gray-400 hover:text-white" data-target="results" id="results-tab" onclick="switchTab('results')">4. Resultados</button>
+                <button class="tab-btn py-4 border-b-2 border-transparent text-gray-400 hover:text-white" data-target="deployment" id="deployment-tab" onclick="switchTab('deployment')">5. Impacto SGC</button>
             </div>
         </div>
     </div>
