@@ -692,7 +692,7 @@ html_content = f"""<!DOCTYPE html>
 </html>
 """
 
-with open("index.html", "w") as f:
+with open("dashboard.html", "w") as f:
     f.write(html_content)
 
-print(f"File index.html generated successfully featuring real embedded dataset.")
+print(f"File dashboard.html generated successfully featuring real embedded dataset.")
