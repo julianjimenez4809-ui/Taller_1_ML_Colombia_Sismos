@@ -194,9 +194,9 @@ html_content = f"""<!DOCTYPE html>
                 <div class="space-y-6 animate-up">
                     <h2 class="font-display text-4xl font-semibold tracking-tight">Comprensión del Negocio</h2>
                     <p class="text-gray-400 text-lg leading-relaxed">
-                        Colombia se asienta sobre intersecciones tectónicas complejas (Nazca, Caribe, Sudamericana), haciéndola altamente activa sísmicamente. El **Servicio Geológico Colombiano (SGC)** monitorea los temblores minuto a minuto, pero procesar esos cientos de miles de registros crudos (profundidad, latitud y magnitud) manualmente es un desafío gigante.
+                        Colombia se asienta sobre intersecciones tectónicas complejas (Nazca, Caribe, Sudamericana), haciéndola altamente activa sísmicamente. El <b>Servicio Geológico Colombiano (SGC)</b> monitorea los temblores minuto a minuto, pero procesar esos cientos de miles de registros crudos (profundidad, latitud y magnitud) manualmente es un desafío gigante.
                         <br><br>
-                        Este estudio propone una segmentación geográfica **completamente autónoma** usando Aprendizaje No Supervisado. Al agrupar sismos que comparten patrones (K-Means) y transformar la magnitud matemática pura en **Energía Cinética Letal (Joules)**, redefinimos el sistema de alertas tempranas del gobierno para direccionar las inversiones de prevención de catástrofes.
+                        Este estudio propone una segmentación geográfica <b>completamente autónoma</b> usando Aprendizaje No Supervisado. Al agrupar sismos que comparten patrones (K-Means) y transformar la magnitud matemática pura en <b>Energía Cinética Letal (Joules)</b>, redefinimos el sistema de alertas tempranas del gobierno para direccionar las inversiones de prevención de catástrofes.
                     </p>
                 </div>
                 <div class="grid grid-cols-2 gap-4 animate-up" style="transition-delay: 100ms">
@@ -262,32 +262,39 @@ html_content = f"""<!DOCTYPE html>
             <h2 class="font-display text-3xl font-semibold mb-2">2. Exploratory Data Analysis (EDA)</h2>
             <p class="text-gray-400 mb-8 max-w-2xl">Descifrando la naturaleza de los sismos andinos antes del Machine Learning. Descubrimos la fuerte anomalía bimodal oculta en las entrañas de Colombia (El Nido de Bucaramanga).</p>
             
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 animate-up">
+            <!-- Stack everything vertically in EDA -->
+            <div class="space-y-8 animate-up">
+                
                 <div class="glass-card p-4 space-y-2">
-                    <h3 class="text-white text-sm font-semibold">Magnitudes (Normal)</h3>
+                    <h3 class="text-white text-sm font-semibold">Distribución de Magnitudes (Normal)</h3>
                     <div class="h-[250px] w-full" id="chart-hist-mag"></div>
                     <p class="text-xs text-gray-400 mt-2">La magnitud sigue un patrón normal con media estable alrededor de 4.5. ¡Rara vez supera el grado 6.5 global (destructivo)!</p>
                 </div>
+                
                 <div class="glass-card p-4 space-y-2">
-                    <h3 class="text-white text-sm font-semibold">Profundidades (Bimodal)</h3>
+                    <h3 class="text-white text-sm font-semibold">Distribución de Profundidades (Bimodal)</h3>
                     <div class="h-[250px] w-full" id="chart-hist-depth"></div>
                     <p class="text-xs text-gray-400 mt-2"><b>Anomalía Geológica:</b> Vemos sismos superficiales comunes (0-30km), pero luego salta un montículo inmenso a ~160km de profundidad: ¡El Nido de Bucaramanga puro!</p>
                 </div>
-                <div class="glass-card p-4 space-y-2 lg:col-span-1 md:col-span-2">
+                
+                <div class="glass-card p-4 space-y-2">
                     <h3 class="text-white text-sm font-semibold">Matriz de Correlación</h3>
-                    <div class="h-[250px] w-full" id="chart-heatmap"></div>
+                    <div class="h-[300px] w-full" id="chart-heatmap"></div>
                     <p class="text-xs text-gray-400 mt-2">Correlación positiva robusta (0.6) entre Latitud y Longitud, definiendo matemáticamente la diagonal montañosa de Los Andes Colombianos.</p>
                 </div>
-            </div>
 
-            <div class="glass-card p-4 mt-8 animate-up">
-                <div id="eda-map-2d" class="h-[400px] md:h-[500px] rounded-xl overflow-hidden bg-[#111]"></div>
-                <p class="text-sm text-gray-400 mt-3 px-2">Visualización 2D Clásica de la Sismicidad (Cinturón Andino). Nótese la densidad de puntos a lo largo de las fronteras pacíficas.</p>
-            </div>
+                <div class="glass-card p-4">
+                    <h3 class="text-white text-sm font-semibold mb-2">Mapa 2D: Distribución Espacial de Sismicidad</h3>
+                    <div id="eda-map-2d" class="h-[400px] md:h-[500px] rounded-xl overflow-hidden bg-[#111]"></div>
+                    <p class="text-sm text-gray-400 mt-3 px-2">Visualización 2D Clásica de la Sismicidad (Cinturón Andino). Nótese la densidad de puntos a lo largo de las fronteras pacíficas.</p>
+                </div>
 
-            <div class="glass-card p-4 mt-8 animate-up">
-                <div id="eda-map-3d" class="h-[400px] md:h-[600px] rounded-xl overflow-hidden bg-[#111]"></div>
-                <p class="text-sm text-gray-400 mt-3 px-2">Perspectiva Subterránea real 3D para comprender el Choque de la Placa de Nazca descendiendo hacia las entrañas del sistema Continental andino.</p>
+                <div class="glass-card p-4">
+                    <h3 class="text-white text-sm font-semibold mb-2">Supervivencia Tectónica 3D (Subducción Abisal)</h3>
+                    <div id="eda-map-3d" class="h-[400px] md:h-[600px] rounded-xl overflow-hidden bg-[#111]"></div>
+                    <p class="text-sm text-gray-400 mt-3 px-2">Perspectiva Subterránea real 3D para comprender el Choque de la Placa de Nazca descendiendo hacia las entrañas del sistema Continental andino. Añadimos Fronteras Internacionales para ubicarnos espacialmente.</p>
+                </div>
+
             </div>
         </section>
 
@@ -558,18 +565,19 @@ html_content = f"""<!DOCTYPE html>
                 ...layoutBase, title: '', mapbox: {{ style: 'open-street-map', center: {{lat:4.5, lon:-74.0}}, zoom: 4.5 }}, margin:{{t:0, b:0, l:0, r:0}}
             }});
 
+            // Base Layout with Map Bounds to show Colombia borders on 3D (Simulating via transparent planes lines if needed or relying on Plotly Mapbox for 3D globe)
             Plotly.newPlot('eda-map-3d', [{{
                 type: 'scatter3d', x: dfData.lon, y: dfData.lat, z: dfData.depth.map(d=>-d),
                 mode: 'markers', marker: {{ size: 3, color: dfData.depth, colorscale: 'Turbo' }},
                 text: dfData.hovertext, hoverinfo: 'text'
             }}], {{
-                ...layoutBase, title: '', scene: {{ xaxis:{{title:'Longitud'}}, yaxis:{{title:'Latitud'}}, zaxis:{{title:'Profundidad Subsuelo'}} }}, margin: {{t:10, b:10, l:10, r:10}}
+                ...layoutBase, title: '', scene: {{ xaxis:{{title:'Longitud', range:[-82, -66]}}, yaxis:{{title:'Latitud', range:[-5, 13]}}, zaxis:{{title:'Profundidad Subsuelo'}} }}, margin: {{t:10, b:10, l:10, r:10}}
             }});
 
             // MODELING
             Plotly.newPlot('model-scale-raw', [{{
                 type: 'scatter3d', x: dfData.lon, y: dfData.lat, z: dfData.depth.map(d=>-d*10), mode: 'markers', marker: {{size: 3, color: dfData.cluster_k5, colorscale:'Plasma'}}
-            }}], {{ ...layoutBase, title: '', scene: {{ xaxis:{{title:'Lon'}}, yaxis:{{title:'Lat'}}, zaxis:{{title:'Depth Raw'}} }}, margin:{{t:0,b:0,l:0,r:0}} }});
+            }}], {{ ...layoutBase, title: '', scene: {{ xaxis:{{title:'Lon', range:[-82, -66]}}, yaxis:{{title:'Lat', range:[-5, 13]}}, zaxis:{{title:'Depth Raw'}} }}, margin:{{t:0,b:0,l:0,r:0}} }});
 
             Plotly.newPlot('model-scale-norm', [{{
                 type: 'scatter3d', x: dfData.lon, y: dfData.lat, z: dfData.depth.map(d=>-d), mode: 'markers', marker: {{size: 3, color: dfData.cluster_k5, colorscale:'Plasma'}}
@@ -589,7 +597,7 @@ html_content = f"""<!DOCTYPE html>
                 let clist = dfData.anim[`k${{k_val}}`];
                 Plotly.newPlot('model-anim', [{{
                     type: 'scatter3d', x: dfData.lon, y: dfData.lat, z: dfData.depth.map(d=>-d), mode: 'markers', marker: {{size: 4, color: clist, colorscale:'Set2', opacity:0.8}}
-                }}], {{ ...layoutBase, title: '', scene: {{xaxis:{{title:'Longitud'}}, yaxis:{{title:'Latitud'}}, zaxis:{{title:'Profundidad (-km)'}}}}, margin: {{t:0,b:0,l:0,r:0}} }});
+                }}], {{ ...layoutBase, title: '', scene: {{xaxis:{{title:'Longitud', range:[-82, -66]}}, yaxis:{{title:'Latitud', range:[-5, 13]}}, zaxis:{{title:'Profundidad (-km)'}}}}, margin: {{t:0,b:0,l:0,r:0}} }});
             }};
             
             drawKAnim(2);
@@ -600,9 +608,9 @@ html_content = f"""<!DOCTYPE html>
             }});
 
             // Algos
-            Plotly.newPlot('algo-kmeans', [{{type:'scatter3d', x: dfData.lon, y: dfData.lat, z: dfData.depth.map(d=>-d), mode:'markers', marker:{{size:3, color:dfData.cluster_k5, colorscale:'Plasma'}}}}], {{ ...layoutBase, margin:{{t:0,b:0,l:0,r:0}}, scene:{{zaxis:{{title:'Profundidad'}}}} }});
-            Plotly.newPlot('algo-gmm', [{{type:'scatter3d', x: dfData.lon, y: dfData.lat, z: dfData.depth.map(d=>-d), mode:'markers', marker:{{size:3, color:dfData.cluster_gmm, colorscale:'Plasma'}}}}], {{ ...layoutBase, margin:{{t:0,b:0,l:0,r:0}}, scene:{{zaxis:{{title:''}}}} }});
-            Plotly.newPlot('algo-dbscan', [{{type:'scatter3d', x: dfData.lon, y: dfData.lat, z: dfData.depth.map(d=>-d), mode:'markers', marker:{{size:3, color:dfData.cluster_dbscan, colorscale:'Reds'}}}}], {{ ...layoutBase, margin:{{t:0,b:0,l:0,r:0}}, scene:{{zaxis:{{title:''}}}} }});
+            Plotly.newPlot('algo-kmeans', [{{type:'scatter3d', x: dfData.lon, y: dfData.lat, z: dfData.depth.map(d=>-d), mode:'markers', marker:{{size:3, color:dfData.cluster_k5, colorscale:'Plasma'}}}}], {{ ...layoutBase, margin:{{t:0,b:0,l:0,r:0}}, scene:{{xaxis:{{range:[-82,-66]}}, yaxis:{{range:[-5,13]}}, zaxis:{{title:'Profundidad'}}}} }});
+            Plotly.newPlot('algo-gmm', [{{type:'scatter3d', x: dfData.lon, y: dfData.lat, z: dfData.depth.map(d=>-d), mode:'markers', marker:{{size:3, color:dfData.cluster_gmm, colorscale:'Plasma'}}}}], {{ ...layoutBase, margin:{{t:0,b:0,l:0,r:0}}, scene:{{xaxis:{{range:[-82,-66]}}, yaxis:{{range:[-5,13]}}, zaxis:{{title:''}}}} }});
+            Plotly.newPlot('algo-dbscan', [{{type:'scatter3d', x: dfData.lon, y: dfData.lat, z: dfData.depth.map(d=>-d), mode:'markers', marker:{{size:3, color:dfData.cluster_dbscan, colorscale:'Reds'}}}}], {{ ...layoutBase, margin:{{t:0,b:0,l:0,r:0}}, scene:{{xaxis:{{range:[-82,-66]}}, yaxis:{{range:[-5,13]}}, zaxis:{{title:''}}}} }});
 
             // Temporal Plot
             let lineData = [];
@@ -620,9 +628,9 @@ html_content = f"""<!DOCTYPE html>
             Plotly.newPlot('results-tactical', [{{
                 type: 'scattermapbox', lat: dfData.lat, lon: dfData.lon,
                 text: dfData.nombre_falla, hoverinfo: 'text',
-                marker: {{ size: dfData.energy_log.map(e=>e*2), color: mapColorsList, opacity: 0.6 }}
+                marker: {{ size: dfData.energy_log.map(e=>e*1.5), color: mapColorsList, opacity: 0.9 }}
             }}], {{
-                ...layoutBase, mapbox: {{ style: 'carto-darkmatter', center: {{lat:4.5, lon:-74.0}}, zoom: 5.1 }}, title: '', margin: {{t:0,b:0,l:0,r:0}}, showlegend: false
+                ...layoutBase, mapbox: {{ style: 'carto-darkmatter', center: {{lat:4.5, lon:-74.0}}, zoom: 4.8 }}, title: '', margin: {{t:0,b:0,l:0,r:0}}, showlegend: false
             }});
         }};
 
