@@ -275,46 +275,41 @@
              <!-- Algorithm Battle -->
              <div class="animate-up">
                  <h3 class="text-xl font-body text-white mb-4">3.4 Batalla Campal de Algoritmos (Bonus Track)</h3>
-                 <p class="text-muted text-sm mb-4">Para validar nuestro campeonato, forzamos a K-Means a combatir lado a lado en un ring de modelos contra el mundo de probabilidades (GMM) y las búsquedas locales (DBSCAN).</p>
-                 <div class="grid md:grid-cols-3 gap-4 mb-6">
-                     <div class="glass-card p-2 h-[350px]" id="algo-kmeans"></div>
-                     <div class="glass-card p-2 h-[350px]" id="algo-gmm"></div>
-                     <div class="glass-card p-2 h-[350px]" id="algo-dbscan"></div>
+                 <p class="text-gray-400 text-sm mb-4">Para validar nuestro campeonato, forzamos a K-Means a combatir en un ring de modelos contra el mundo de probabilidades (GMM) y las búsquedas locales basadas en densidad (DBSCAN).</p>
+                 
+                 <div class="space-y-8 mb-8">
+                     <!-- KMeans -->
+                     <div class="glass-card flex flex-col md:flex-row gap-6 p-6 items-center">
+                         <div class="md:w-1/3 text-left space-y-3">
+                             <h4 class="text-[#7b39fc] font-bold text-xl">1. K-Means (El Campeón 👑)</h4>
+                             <p class="text-white text-sm"><b>Metodología:</b> Distancia Euclidiana Plana y partición vectorial por centroides.</p>
+                             <p class="text-gray-400 text-sm">Logra la hazaña perfecta que busca el SGC: crea polígonos fronterizos secos, tajantes y sin ambigüedades. Permite evacuar ciudades con límites claros, haciéndolo el ganador indiscutible.</p>
+                         </div>
+                         <div class="md:w-2/3 w-full h-[450px]" id="algo-kmeans"></div>
+                     </div>
+
+                     <!-- GMM -->
+                     <div class="glass-card flex flex-col md:flex-row gap-6 p-6 items-center">
+                         <div class="md:w-1/3 text-left space-y-3">
+                             <h4 class="text-white font-bold text-xl">2. Gaussian Mixture (GMM)</h4>
+                             <p class="text-white text-sm"><b>Metodología:</b> Probabilidad de Elipses Anidadas mediante Co-varianza.</p>
+                             <p class="text-gray-400 text-sm">Crea agrupaciones borrosas "tipo huevo gigante" que se entrelazan suavemente. Excelente conceptualmente, pero muy peligroso operativamente para emitir alertas públicas que requieren límites de evacuación binarios.</p>
+                         </div>
+                         <div class="md:w-2/3 w-full h-[450px]" id="algo-gmm"></div>
+                     </div>
+
+                     <!-- DBSCAN -->
+                     <div class="glass-card flex flex-col md:flex-row gap-6 p-6 items-center">
+                         <div class="md:w-1/3 text-left space-y-3">
+                             <h4 class="text-[#ef4444] font-bold text-xl">3. DBSCAN (Fracaso)</h4>
+                             <p class="text-white text-sm"><b>Metodología:</b> Búsqueda expansiva pura de densidad topológica.</p>
+                             <p class="text-gray-400 text-sm">Falla miserablemente. Al ser los Andes una cadena continua ininterrumpida de hiper-sismos, DBSCAN se vuelve loco y traga todo Colombia fusionándolo en un solo "Súper-Continente", excluyendo al mar como ruido nulo.</p>
+                         </div>
+                         <div class="md:w-2/3 w-full h-[450px]" id="algo-dbscan"></div>
+                     </div>
                  </div>
                  
-                 <!-- Table -->
-                 <div class="glass-card overflow-hidden">
-                     <table class="w-full text-left font-body text-sm text-gray-300">
-                         <thead class="bg-white/5 text-white">
-                             <tr>
-                                 <th class="px-6 py-4">Algoritmo</th>
-                                 <th class="px-6 py-4">Metodología</th>
-                                 <th class="px-6 py-4">Resultado Visual / Físico</th>
-                                 <th class="px-6 py-4">Veredicto Final</th>
-                             </tr>
-                         </thead>
-                         <tbody class="divide-y divide-white/10">
-                             <tr>
-                                 <td class="px-6 py-4 text-[#7b39fc] font-bold text-lg">K-Means (👑)</td>
-                                 <td class="px-6 py-4">Distancia Euclidiana Plana (Centroides)</td>
-                                 <td class="px-6 py-4">Cortes secos delimitados como polígonos fronterizos.</td>
-                                 <td class="px-6 py-4 text-white font-bold bg-[#7b39fc]/20">GANADOR. Ofrece límites claros para operacionar evacuaciones SGC.</td>
-                             </tr>
-                             <tr>
-                                 <td class="px-6 py-4">GMM Gaussian</td>
-                                 <td class="px-6 py-4">Probabilidad de Elipses Anidadas</td>
-                                 <td class="px-6 py-4">Agrupaciones suaves tipo huevo afilado que crujen mejor el subsuelo.</td>
-                                 <td class="px-6 py-4 text-white">Excelente contendiente, pero matematicamente borroso para emitir alertas.</td>
-                             </tr>
-                             <tr>
-                                 <td class="px-6 py-4 text-gray-500">DBSCAN</td>
-                                 <td class="px-6 py-4 text-gray-500">Densidad Topológica Pura</td>
-                                 <td class="px-6 py-4 text-gray-500">Crea un super-continente amarilo al no haber interrupciones limpias en los andes, declarando el resto "ruido oscuro (-1)".</td>
-                                 <td class="px-6 py-4 text-[#ef4444] font-bold bg-black">FRACASO ROTUNDO. Inservible geológicamente aquí.</td>
-                             </tr>
-                         </tbody>
-                     </table>
-                 </div>
+                 <!-- Table for SEO/Accessibility retained but simplified as visual is now dominant above -->
              </div>
         </section>
 
@@ -332,10 +327,12 @@
             </div>
 
             <!-- Tactical Map -->
-            <div class="glass-card p-6 animate-up max-w-[1200px] mx-auto text-center border-t-8 border-t-[#ef4444]">
-                <h3 class="font-display text-2xl font-bold mb-4">MAPA TÁCTICO MILITAR 2D: RIESGO ACUMULADO POR PLACA</h3>
-                <p class="text-sm text-gray-400 mb-4 text-left">Representamos las 5 zonas descubiertas de K-Means. <b>El tamaño y luminosidad de las orbes no indica cuántos sismos hubieron, sino cuánta ENERGÍA LETAL (Joules) fue liberada en escalas logarítmicas.</b></p>
-                <div id="results-tactical" class="h-[600px] w-full bg-[#111] rounded-lg"></div>
+            <div class="glass-card p-0 overflow-hidden animate-up max-w-[1200px] mx-auto text-center border-t-8 border-t-[#ef4444]">
+                <div class="p-6 pb-2">
+                    <h3 class="font-display text-2xl font-bold mb-4">MAPA TÁCTICO MILITAR 2D: RIESGO ACUMULADO POR PLACA</h3>
+                    <p class="text-sm text-gray-400 text-left">Representamos las 5 zonas descubiertas de K-Means. <b>El tamaño de las orbes no indica la cantidad de sismos (superposición), sino el nivel de ENERGÍA CINETICA LETAL EXCESIVA (Joules) logarítmicamente focalizada en dicha área.</b> Los sismos trasparentes exponen un peligro extremo masivo.</p>
+                </div>
+                <div id="results-tactical" class="h-[650px] w-full rounded-b-lg mapboxgl-map"></div>
             </div>
         </section>
 
@@ -519,9 +516,9 @@
             });
 
             // Algos
-            Plotly.newPlot('algo-kmeans', [{type:'scatter3d', x: dfData.lon, y: dfData.lat, z: dfData.depth.map(d=>-d), mode:'markers', marker:{size:3, color:dfData.cluster_k5, colorscale:'Plasma'}}], { ...layoutBase, margin:{t:0,b:0,l:0,r:0}, scene:{xaxis:{range:[-82,-66]}, yaxis:{range:[-5,13]}, zaxis:{title:'Profundidad'}} });
-            Plotly.newPlot('algo-gmm', [{type:'scatter3d', x: dfData.lon, y: dfData.lat, z: dfData.depth.map(d=>-d), mode:'markers', marker:{size:3, color:dfData.cluster_gmm, colorscale:'Plasma'}}], { ...layoutBase, margin:{t:0,b:0,l:0,r:0}, scene:{xaxis:{range:[-82,-66]}, yaxis:{range:[-5,13]}, zaxis:{title:''}} });
-            Plotly.newPlot('algo-dbscan', [{type:'scatter3d', x: dfData.lon, y: dfData.lat, z: dfData.depth.map(d=>-d), mode:'markers', marker:{size:3, color:dfData.cluster_dbscan, colorscale:'Reds'}}], { ...layoutBase, margin:{t:0,b:0,l:0,r:0}, scene:{xaxis:{range:[-82,-66]}, yaxis:{range:[-5,13]}, zaxis:{title:''}} });
+            Plotly.newPlot('algo-kmeans', [{type:'scatter3d', x: dfData.lon, y: dfData.lat, z: dfData.depth.map(d=>-d), mode:'markers', marker:{size:3, color:dfData.cluster_k5, colorscale:'Plasma'}}], { ...layoutBase, margin:{t:0,b:0,l:0,r:0}, scene:{xaxis:{title:'Longitud', range:[-82,-66]}, yaxis:{title:'Latitud', range:[-5,13]}, zaxis:{title:'Profundidad'}} });
+            Plotly.newPlot('algo-gmm', [{type:'scatter3d', x: dfData.lon, y: dfData.lat, z: dfData.depth.map(d=>-d), mode:'markers', marker:{size:3, color:dfData.cluster_gmm, colorscale:'Plasma'}}], { ...layoutBase, margin:{t:0,b:0,l:0,r:0}, scene:{xaxis:{title:'Longitud', range:[-82,-66]}, yaxis:{title:'Latitud', range:[-5,13]}, zaxis:{title:'Profundidad'}} });
+            Plotly.newPlot('algo-dbscan', [{type:'scatter3d', x: dfData.lon, y: dfData.lat, z: dfData.depth.map(d=>-d), mode:'markers', marker:{size:3, color:dfData.cluster_dbscan, colorscale:'Reds'}}], { ...layoutBase, margin:{t:0,b:0,l:0,r:0}, scene:{xaxis:{title:'Longitud', range:[-82,-66]}, yaxis:{title:'Latitud', range:[-5,13]}, zaxis:{title:'Profundidad'}} });
 
             // Temporal Plot
             let lineData = [];
@@ -539,9 +536,9 @@
             Plotly.newPlot('results-tactical', [{
                 type: 'scattermapbox', lat: dfData.lat, lon: dfData.lon,
                 text: dfData.nombre_falla, hoverinfo: 'text',
-                marker: { size: dfData.energy_log.map(e=>e*1.5), color: mapColorsList, opacity: 0.9 }
+                marker: { size: dfData.energy_log.map(e => Math.min(e*1.5, 18)), color: mapColorsList, opacity: 0.5 }
             }], {
-                ...layoutBase, mapbox: { style: 'carto-darkmatter', center: {lat:4.5, lon:-74.0}, zoom: 4.8 }, title: '', margin: {t:0,b:0,l:0,r:0}, showlegend: false
+                ...layoutBase, mapbox: { style: 'carto-darkmatter', center: {lat:4.5, lon:-74.0}, zoom: 4.5 }, title: '', margin: {t:0,b:0,l:0,r:0}, showlegend: false
             });
         };
 
