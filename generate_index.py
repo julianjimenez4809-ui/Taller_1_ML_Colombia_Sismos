@@ -62,6 +62,41 @@ for falla in df['nombre_falla'].unique():
     series_temporales[falla] = [subset.get(m, 0) for m in meses_ordenados]
 
 # Reducir data frame para JSON (ahorrar KB)
+import requests
+url_geojson = "https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json"
+try:
+    geojson_mundo = requests.get(url_geojson).json()
+except Exception:
+    geojson_mundo = {'features': []}
+
+colores_paises = {'Colombia': 'white', 'Ecuador': '#1d4ed8', 'Venezuela': '#b91c1c', 'Panama': '#15803d', 'Peru': '#7e22ce'}
+trazos_paises_js = []
+
+for feature in geojson_mundo.get('features', []):
+    pais_nombre = feature['properties']['name']
+    if pais_nombre in colores_paises.keys():
+        geom_type = feature['geometry']['type']
+        coords = feature['geometry']['coordinates']
+        polygons = coords if geom_type == 'MultiPolygon' else [coords]
+        dept_lons, dept_lats, dept_z = [], [], []
+        for poly in polygons:
+            for ring in poly:
+                for pt in ring:
+                    dept_lons.append(pt[0])
+                    dept_lats.append(pt[1])
+                    dept_z.append(0)  
+                dept_lons.append(None)
+                dept_lats.append(None)
+                dept_z.append(None)
+        
+        trazos_paises_js.append({
+            'type': 'scatter3d',
+            'x': dept_lons, 'y': dept_lats, 'z': dept_z,
+            'mode': 'lines', 'line': {'color': colores_paises[pais_nombre], 'width': 3},
+            'name': f"Frontera: {pais_nombre}",
+            'showlegend': False, 'hoverinfo': 'name'
+        })
+
 export_data = {
     'lat': df['latitude'].round(3).tolist(),
     'lon': df['longitude'].round(3).tolist(),
@@ -75,7 +110,8 @@ export_data = {
     'nombre_falla': df['nombre_falla'].tolist(),
     'anim': anim_clusters,
     'temporal': {'meses': meses_ordenados, 'series': series_temporales},
-    'hovertext': df['place'].astype(str).tolist()
+    'hovertext': df['place'].astype(str).tolist(),
+    'trazos_paises': trazos_paises_js
 }
 
 json_data = json.dumps(export_data)
@@ -400,6 +436,32 @@ html_content = f"""<!DOCTYPE html>
             <h2 class="font-display text-3xl font-semibold mb-2">4. Resultados y Perfilación de Negocio</h2>
             <p class="text-gray-400 mb-8 max-w-2xl">Bautizando científicamente los clústeres a partir de los promedios numéricos extraídos de nuestro K-Means y cruzándolos con la <b>Energía Matemática (Joules)</b>.</p>
 
+            <!-- Nomenclatura Científica -->
+            <div class="animate-up mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="glass-card p-6 border-l-4 border-l-[#be185d]">
+                        <h4 class="text-white font-bold text-lg mb-2">1. Nido de Bucaramanga y Deep Andes</h4>
+                        <p class="text-xs text-gray-400">Profundidades extremas (>140km) y alta recurrencia de ruido geológico subterráneo. Múltiples alertas inofensivas en superficie.</p>
+                    </div>
+                    <div class="glass-card p-6 border-l-4 border-l-[#1d4ed8]">
+                        <h4 class="text-white font-bold text-lg mb-2">2. Subducción Profunda Nazca (Pacífico)</h4>
+                        <p class="text-xs text-gray-400">Fosa oceánica occidental que experimenta acumulaciones brutales de Joules cuando la placa continental roza con la oceánica.</p>
+                    </div>
+                    <div class="glass-card p-6 border-l-4 border-l-[#ea580c]">
+                        <h4 class="text-white font-bold text-lg mb-2">3. Choque Fronterizo Andino</h4>
+                        <p class="text-xs text-gray-400">Regiones límites del sur (Galeras/Ecuador) donde la orogenia es activa y el subsuelo sufre fricción térmica intensa.</p>
+                    </div>
+                    <div class="glass-card p-6 border-l-4 border-l-[#047857]">
+                        <h4 class="text-white font-bold text-lg mb-2">4. Fallas Caribeñas (Norte)</h4>
+                        <p class="text-xs text-gray-400">Concentración de fallas en el mar y cordillera norte que pueden inducir desplazamientos atípicos en franjas costeras.</p>
+                    </div>
+                    <div class="glass-card p-6 border-l-4 border-l-[#fcd34d]">
+                        <h4 class="text-white font-bold text-lg mb-2">5. Fallas Superficiales Cordilleras</h4>
+                        <p class="text-xs text-gray-400">El mayor peligro humano. Red de sismos hiperfocales bajo las cordilleras (0-30km). Energía moderada, pero máximo riesgo en ciudades.</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Temporal Timeline -->
             <div class="glass-card p-6 animate-up">
                 <div id="results-timeline" class="h-[400px] w-full"></div>
@@ -556,7 +618,7 @@ html_content = f"""<!DOCTYPE html>
             }});
 
             // Base Layout with Map Bounds to show Colombia borders on 3D (Simulating via transparent planes lines if needed or relying on Plotly Mapbox for 3D globe)
-            Plotly.newPlot('eda-map-3d', [{{
+            Plotly.newPlot('eda-map-3d', [...dfData.trazos_paises, {{
                 type: 'scatter3d', x: dfData.lon, y: dfData.lat, z: dfData.depth.map(d=>-d),
                 mode: 'markers', marker: {{ size: 3, color: dfData.depth, colorscale: 'Turbo' }},
                 text: dfData.hovertext, hoverinfo: 'text'
@@ -565,11 +627,11 @@ html_content = f"""<!DOCTYPE html>
             }});
 
             // MODELING
-            Plotly.newPlot('model-scale-raw', [{{
+            Plotly.newPlot('model-scale-raw', [...dfData.trazos_paises, {{
                 type: 'scatter3d', x: dfData.lon, y: dfData.lat, z: dfData.depth.map(d=>-d*10), mode: 'markers', marker: {{size: 3, color: dfData.cluster_k5, colorscale:'Plasma'}}
             }}], {{ ...layoutBase, title: '', scene: {{ xaxis:{{title:'Lon', range:[-82, -66]}}, yaxis:{{title:'Lat', range:[-5, 13]}}, zaxis:{{title:'Depth Raw'}} }}, margin:{{t:0,b:0,l:0,r:0}} }});
 
-            Plotly.newPlot('model-scale-norm', [{{
+            Plotly.newPlot('model-scale-norm', [...dfData.trazos_paises, {{
                 type: 'scatter3d', x: dfData.lon, y: dfData.lat, z: dfData.depth.map(d=>-d), mode: 'markers', marker: {{size: 3, color: dfData.cluster_k5, colorscale:'Plasma'}}
             }}], {{ ...layoutBase, title: '', scene: {{ xaxis:{{title:'Lon Scaled'}}, yaxis:{{title:'Lat Scaled'}}, zaxis:{{title:'Depth Norm'}} }}, margin:{{t:0,b:0,l:0,r:0}} }});
 
@@ -585,7 +647,7 @@ html_content = f"""<!DOCTYPE html>
             // Anim Setup
             const drawKAnim = (k_val) => {{
                 let clist = dfData.anim[`k${{k_val}}`];
-                Plotly.newPlot('model-anim', [{{
+                Plotly.newPlot('model-anim', [...dfData.trazos_paises, {{
                     type: 'scatter3d', x: dfData.lon, y: dfData.lat, z: dfData.depth.map(d=>-d), mode: 'markers', marker: {{size: 4, color: clist, colorscale:'Set2', opacity:0.8}}
                 }}], {{ ...layoutBase, title: '', scene: {{xaxis:{{title:'Longitud', range:[-82, -66]}}, yaxis:{{title:'Latitud', range:[-5, 13]}}, zaxis:{{title:'Profundidad (-km)'}}}}, margin: {{t:0,b:0,l:0,r:0}} }});
             }};
@@ -598,9 +660,9 @@ html_content = f"""<!DOCTYPE html>
             }});
 
             // Algos
-            Plotly.newPlot('algo-kmeans', [{{type:'scatter3d', x: dfData.lon, y: dfData.lat, z: dfData.depth.map(d=>-d), mode:'markers', marker:{{size:3, color:dfData.cluster_k5, colorscale:'Plasma'}}}}], {{ ...layoutBase, margin:{{t:0,b:0,l:0,r:0}}, scene:{{xaxis:{{title:'Longitud', range:[-82,-66]}}, yaxis:{{title:'Latitud', range:[-5,13]}}, zaxis:{{title:'Profundidad'}}}} }});
-            Plotly.newPlot('algo-gmm', [{{type:'scatter3d', x: dfData.lon, y: dfData.lat, z: dfData.depth.map(d=>-d), mode:'markers', marker:{{size:3, color:dfData.cluster_gmm, colorscale:'Plasma'}}}}], {{ ...layoutBase, margin:{{t:0,b:0,l:0,r:0}}, scene:{{xaxis:{{title:'Longitud', range:[-82,-66]}}, yaxis:{{title:'Latitud', range:[-5,13]}}, zaxis:{{title:'Profundidad'}}}} }});
-            Plotly.newPlot('algo-dbscan', [{{type:'scatter3d', x: dfData.lon, y: dfData.lat, z: dfData.depth.map(d=>-d), mode:'markers', marker:{{size:3, color:dfData.cluster_dbscan, colorscale:'Reds'}}}}], {{ ...layoutBase, margin:{{t:0,b:0,l:0,r:0}}, scene:{{xaxis:{{title:'Longitud', range:[-82,-66]}}, yaxis:{{title:'Latitud', range:[-5,13]}}, zaxis:{{title:'Profundidad'}}}} }});
+            Plotly.newPlot('algo-kmeans', [...dfData.trazos_paises, {{type:'scatter3d', x: dfData.lon, y: dfData.lat, z: dfData.depth.map(d=>-d), mode:'markers', marker:{{size:3, color:dfData.cluster_k5, colorscale:'Plasma'}}}}], {{ ...layoutBase, margin:{{t:0,b:0,l:0,r:0}}, scene:{{xaxis:{{title:'Longitud', range:[-82,-66]}}, yaxis:{{title:'Latitud', range:[-5,13]}}, zaxis:{{title:'Profundidad'}}}} }});
+            Plotly.newPlot('algo-gmm', [...dfData.trazos_paises, {{type:'scatter3d', x: dfData.lon, y: dfData.lat, z: dfData.depth.map(d=>-d), mode:'markers', marker:{{size:3, color:dfData.cluster_gmm, colorscale:'Plasma'}}}}], {{ ...layoutBase, margin:{{t:0,b:0,l:0,r:0}}, scene:{{xaxis:{{title:'Longitud', range:[-82,-66]}}, yaxis:{{title:'Latitud', range:[-5,13]}}, zaxis:{{title:'Profundidad'}}}} }});
+            Plotly.newPlot('algo-dbscan', [...dfData.trazos_paises, {{type:'scatter3d', x: dfData.lon, y: dfData.lat, z: dfData.depth.map(d=>-d), mode:'markers', marker:{{size:3, color:dfData.cluster_dbscan, colorscale:'Reds'}}}}], {{ ...layoutBase, margin:{{t:0,b:0,l:0,r:0}}, scene:{{xaxis:{{title:'Longitud', range:[-82,-66]}}, yaxis:{{title:'Latitud', range:[-5,13]}}, zaxis:{{title:'Profundidad'}}}} }});
 
             // Temporal Plot
             let lineData = [];
