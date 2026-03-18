@@ -1,41 +1,127 @@
-# Proyecto: Clustering de Actividad Sísmica en Colombia
+# 🌋 Inteligencia Sísmica Colombia — Machine Learning con CRISP-DM
 
-Este documento servirá como una bitácora o registro paso a paso de nuestro avance en el proyecto. Aquí iremos documentando cada fase completada para saber exactamente en dónde vamos y qué falta por hacer.
-
-## 📌 Progreso del Proyecto (CRISP-DM)
-
-- [x] **Fase 1: Business Understanding (Comprensión del Negocio)**
-- [x] **Fase 2: Data Understanding (Comprensión de los Datos / EDA)**
-- [ ] **Fase 3: Data Preparation (Preparación de los Datos)**
-- [ ] **Fase 4: Modeling (Modelamiento - K-Means)**
-- [ ] **Fase 5: Evaluation (Evaluación y Perfilamiento de Clusters)**
-- [ ] **Fase 6: Comunicación de Resultados (Dashboard y Reporte)**
+> Segmentación autónoma de actividad sísmica en territorio colombiano mediante K-Means y perfiles de Energía Cinética (Joules).  
+> **Live Demo →** [taller-1-ml-colombia-sismos.vercel.app](https://taller-1-ml-colombia-sismos.vercel.app)
 
 ---
 
-## ✅ Fase 1: Business Understanding (Comprensión del Negocio)
+## 📌 Descripción del Proyecto
 
-En esta fase nos enfocamos en entender a fondo el problema que estamos intentando resolver antes de tocar una sola línea de código.
+Colombia se asienta sobre la intersección de tres placas tectónicas (Nazca, Caribe, Sudamericana), convirtiéndola en uno de los países sísmicamente más activos de América Latina. El **Servicio Geológico Colombiano (SGC)** monitorea cientos de miles de registros sísmicos, pero su procesamiento manual es un desafío enorme.
 
-### 1. Definición del Problema
-Colombia se encuentra en una zona de alta complejidad tectónica (intersección de las placas de Nazca, Caribe y Sudamericana), lo que genera una sismicidad constante. El **Servicio Geológico Colombiano (SGC)** tiene el desafío de monitorear esta actividad, pero los recursos son limitados. El problema central consiste en **identificar de manera automática y objetiva regiones sísmicas que presenten comportamientos similares** utilizando únicamente las mediciones instrumentales (latitud, longitud, profundidad, magnitud, etc.). Esto permitiría entender mejor la dinámica de los sismos en el país.
-
-### 2. ¿Por qué el clustering es la técnica apropiada?
-Dado que los datos del catálogo sísmico del USGS no vienen con etiquetas que definan a priori a qué "zona sísmica" pertenece cada sismo, estamos frente a un problema clásico de aprendizaje **no supervisado**. El clustering (como K-Means) es ideal aquí porque nos permite descubrir una estructura oculta en los datos basada únicamente en la similitud o proximidad de sus características. En lugar de forzar zonas basadas en límites políticos o mapas antiguos, el modelo revelará la verdadera agrupación matemática y espacial de los sismos.
-
-### 3. Stakeholders y Casos de Uso
-- **Servicio Geológico Colombiano (SGC)**: Utilizará los resultados para entender la distribución espacial real de las amenazas sísmicas.
-- **Entidades de Gestión del Riesgo (UNGRD, Defensa Civil)**: Se beneficiarán al poder priorizar qué zonas requieren la instalación de nuevas estaciones de monitoreo y cómo optimizar o focalizar las redes de alertas tempranas.
-- **Investigadores y Geólogos**: Podrán validar empíricamente la existencia de fenómenos tectónicos teóricos a través de algoritmos puramente basados en datos.
-
-### 4. Hipótesis: ¿Cuántas zonas sísmicas existen en Colombia?
-Considerando el contexto geológico y tectónico de Colombia, al menos podemos esperar encontrar:
-1. Una zona asociada a la subducción de la Placa de Nazca en el Pacífico.
-2. Una zona de sismicidad profunda y muy concentrada correspondiente al famoso "Nido Sísmico de Bucaramanga".
-3. Temblores más superficiales asociados a las principales fallas geológicas a lo largo de las cordilleras de los Andes (Andina Central/Oriental/Occidental).
-4. Posibles focos menores hacia el sur o en la región del Caribe.
-
-Por tanto, nuestra hipótesis inicial es que podrían encontrarse entre **3 y 5 clusters (zonas sísmicas)** distintos, caracterizados no solo por sus coordenadas lat/lon, sino especialmente por la interacción con la variable de **profundidad**.
+Este proyecto aplica **Aprendizaje No Supervisado (K-Means)** sobre datos reales del USGS para:
+- Clasificar automáticamente zonas sísmicas por patrones geoespaciales
+- Transformar magnitud Richter en **Energía Cinética Letal (Joules)**
+- Generar recomendaciones presupuestarias para la prevención de catástrofes
 
 ---
-*Fin de la Fase 1. Próximo paso: Fase 2 (EDA).*
+
+## 🧠 Metodología: CRISP-DM
+
+```
+Comprensión del Negocio → EDA → Preparación → Modelado → Evaluación → Despliegue
+```
+
+| Fase | Descripción |
+|------|-------------|
+| 📊 Comprensión | Definición de métricas de éxito para el SGC |
+| 🔍 EDA | Extracción USGS, limpieza, visualizaciones 2D y 3D |
+| ⚙️ Preparación | `StandardScaler()` + Ingeniería de características (Joules) |
+| 🤖 Modelado | K-Means vs DBSCAN vs GMM — batalla de algoritmos |
+| 📈 Evaluación | Perfilación temporal de fallas y estacionalidad |
+| 🌐 Despliegue | Dashboard web ejecutivo en Vercel |
+
+---
+
+## 🗺️ Descubrimientos Clave
+
+### 🔬 El Hallazgo Paradójico
+Antes del estudio, los medios asumían que **Bucaramanga** (con la mayor frecuencia sísmica del país) era la zona más peligrosa. El análisis reveló lo contrario:
+
+> **El Nido de Bucaramanga** genera miles de microsismos profundos e inofensivos.  
+> **La verdadera amenaza** está en las fallas costeras del Pacífico (Subducción de Nazca), que acumulan silenciosamente el 80% de la energía cinética letal.
+
+### 🗂️ 5 Zonas Tectónicas Identificadas (K=5)
+
+| Clúster | Zona | Peligrosidad |
+|---------|------|-------------|
+| 1 | Nido de Bucaramanga & Deep Andes | 🟡 Media — sismos profundos inofensivos |
+| 2 | Subducción Profunda Nazca (Pacífico) | 🔴 Extrema — 80% energía cinética |
+| 3 | Choque Fronterizo Andino (Galeras/Ecuador) | 🟠 Alta — fricción térmica intensa |
+| 4 | Fallas Caribeñas (Norte) | 🟠 Alta — desplazamientos costeros |
+| 5 | Fallas Superficiales Cordilleras | 🔴 Extrema — máximo riesgo urbano |
+
+---
+
+## 🛠️ Stack Tecnológico
+
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-150458?style=flat&logo=pandas&logoColor=white)
+![NumPy](https://img.shields.io/badge/NumPy-013243?style=flat&logo=numpy&logoColor=white)
+![Scikit-learn](https://img.shields.io/badge/Scikit--learn-F7931E?style=flat&logo=scikit-learn&logoColor=white)
+![Google Colab](https://img.shields.io/badge/Google%20Colab-F9AB00?style=flat&logo=googlecolab&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=flat&logo=vercel&logoColor=white)
+
+- **Lenguaje:** Python 3
+- **Análisis y manipulación:** Pandas, NumPy
+- **Machine Learning:** Scikit-learn (K-Means, DBSCAN, GMM)
+- **Visualización:** Matplotlib, Plotly (3D)
+- **Entorno:** Google Colab
+- **Fuente de datos:** USGS Earthquake Catalog
+- **Despliegue:** HTML + Vercel
+
+---
+
+## 📂 Estructura del Repositorio
+
+```
+📦 Taller_1_ML_Colombia_Sismos
+├── 📁 data/                  # Base de datos geoespacial USGS
+├── 📁 notebooks/             # Análisis exploratorio y modelado
+├── 📁 visualizations/        # Gráficas 2D y 3D generadas
+├── 📄 index.html             # Dashboard ejecutivo web
+└── 📄 README.md
+```
+
+---
+
+## 🚀 Cómo Ejecutar
+
+```bash
+# 1. Clonar el repositorio
+git clone https://github.com/julianjimenez4809-ui/Taller_1_ML_Colombia_Sismos
+
+# 2. Instalar dependencias
+pip install pandas numpy scikit-learn matplotlib plotly
+
+# 3. Abrir el notebook en Google Colab o Jupyter
+jupyter notebook notebooks/analisis_sismico.ipynb
+```
+
+O explorar directamente el **[dashboard interactivo](https://taller-1-ml-colombia-sismos.vercel.app)** sin instalación.
+
+---
+
+## 💡 Recomendaciones al SGC
+
+Basado en los hallazgos del modelo:
+
+- **60% del presupuesto** → Sensores oceánicos de alerta temprana (tsunamis) frente a Nariño, Cauca y Valle del Cauca
+- **30% del presupuesto** → Refuerzo de códigos de construcción urbana en Bogotá, Medellín y Eje Cafetero (hipocéntros a <25km)
+- **10% del presupuesto** → Investigación académica del Nido de Bucaramanga
+
+---
+
+## 👤 Autor
+
+**Julián Camilo Jiménez Rodríguez**  
+Estudiante de Ciencia de Datos — Universidad Externado de Colombia  
+📧 julian.jimenez5@est.uexternado.edu.co  
+🐙 [@julianjimenez4809-ui](https://github.com/julianjimenez4809-ui)
+
+---
+
+## 📄 Licencia
+
+Proyecto académico — Universidad Externado de Colombia, 2026.  
+Datos fuente: [USGS Earthquake Hazards Program](https://earthquake.usgs.gov/earthquakes/search/)
